@@ -19,8 +19,7 @@ title: NonsoTech Insights # the main title
 tagline: Navigating Azure & DevOps Landscapes
 
 description: >- # used by seo meta and the atom feed
-  Welcome to NonsoTech Insights! I'm Nonso Emmanuel, dedicated to leveraging cutting-edge technologies to build robust and scalable solutions. This blog focuses on Azure, DevOps, Platform Engineering, Kubernetes, and Infrastructure as Code (IaC). Explore comprehensive tutorials, best practices, and in-depth analyses to streamline your cloud infrastructure, automate deployments, and stay updated with the latest industry trends.
-
+  Welcome to NonsoTech Insights! I'm Nonso Emmanuel, dedicated to Azure, DevOps, Platform Engineering, Kubernetes, and Infrastructure as Code (IaC). Explore practical tutorials and expert insights to optimize your cloud infrastructure and automate your deployments effectively.
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://nonsoUdechukwu.github.io"
@@ -98,7 +97,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar:
+avatar: https://avatars.githubusercontent.com/u/35489366?v=4
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
