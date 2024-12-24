@@ -16,7 +16,7 @@ timezone: Africa/Lagos
 
 title: NonsoTech Insights # the main title
 
-tagline: Mastering Azure & DevOps Excellence 
+tagline: Navigating Azure & DevOps Landscapes
 
 description: >- # used by seo meta and the atom feed
   Welcome to NonsoTech Insights! I'm Nonso Emmanuel, dedicated to leveraging cutting-edge technologies to build robust and scalable solutions. This blog focuses on Azure, DevOps, Platform Engineering, Kubernetes, and Infrastructure as Code (IaC). Explore comprehensive tutorials, best practices, and in-depth analyses to streamline your cloud infrastructure, automate deployments, and stay updated with the latest industry trends.
@@ -34,7 +34,7 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Emmanuel Udechukwu
+  name: Nonso Udechukwu
   email: nonso.udechukwu@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
