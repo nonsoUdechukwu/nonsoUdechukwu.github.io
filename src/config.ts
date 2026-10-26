@@ -16,13 +16,13 @@ export const AUTHOR = {
   name: 'Nonso Udechukwu',
   fullName: 'Nonso Emmanuel Udechukwu',
   role: 'AI · Platform Engineering · DevOps',
-  title: 'Platform & DevOps Engineer',
-  avatar: 'https://avatars.githubusercontent.com/u/35489366?v=4',
+  title: 'DevOps & Platform Engineer',
+  avatar: '/images/profile.jpg',
   location: 'Netherlands',
   origin: 'Nigeria',
   // Calculated at build time from CAREER_START_YEAR.
   yearsExperience: `${new Date().getFullYear() - CAREER_START_YEAR}+`,
-  bio: 'Platform & DevOps engineer exploring AI, cloud-native platforms, Kubernetes and automation on Azure.',
+  bio: 'DevOps & Platform Engineer building secure, scalable cloud platforms and AI-powered automation across Azure, AWS and Google Cloud.',
   email: 'nonso.udechukwu@gmail.com',
 };
 

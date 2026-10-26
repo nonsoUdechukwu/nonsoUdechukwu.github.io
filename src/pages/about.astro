@@ -2,7 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { AUTHOR, SOCIALS } from '../config';
-import { ABOUT, CERTIFICATIONS, SKILLS } from '../data/about';
+import {
+  ABOUT,
+  APPROACH,
+  CAREER_GOALS,
+  CERTIFICATIONS,
+  COLLABORATORS,
+  PRIORITIES,
+  SKILLS,
+  VALUES,
+  WHAT_I_DO,
+} from '../data/about';
 
 const certGroups = CERTIFICATIONS.filter((g) => g.items.length > 0);
 
@@ -20,7 +30,11 @@ const links = [
       <div class="about-intro">
         <p class="eyebrow">About</p>
         <h1 class="about-name">{AUTHOR.fullName}</h1>
-        <p class="about-role">{AUTHOR.role}</p>
+        <p class="about-role">{AUTHOR.title}</p>
+        <ul class="role-chips" aria-label="Roles">
+          {ABOUT.roles.map((r) => <li>{r}</li>)}
+        </ul>
+        <blockquote class="about-quote">{ABOUT.quote}</blockquote>
         <div class="about-text prose">
           {ABOUT.paragraphs.map((p) => <p set:html={p} />)}
         </div>
@@ -59,7 +73,49 @@ const links = [
         <div class="profile-badges">
           {ABOUT.badges.map((b) => <span class="tag">{b}</span>)}
         </div>
+        <div class="profile-loves">
+          <p class="profile-loves-title">I love</p>
+          <ul>
+            {ABOUT.loves.map((l) => <li>{l}</li>)}
+          </ul>
+        </div>
       </aside>
+    </section>
+
+    <section class="mission-card">
+      <p class="eyebrow">My mission</p>
+      <p class="mission-text">{ABOUT.mission}</p>
+    </section>
+
+    <section class="about-section">
+      <header class="section-head">
+        <p class="eyebrow">Focus</p>
+        <h2>What I do</h2>
+      </header>
+      <div class="do-grid">
+        {WHAT_I_DO.map((d) => (
+          <div class="do-card">
+            <span class="do-icon" aria-hidden="true"><Icon name={d.icon} size={22} /></span>
+            <h3 class="do-title">{d.title}</h3>
+            <p class="do-desc">{d.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="about-section">
+      <header class="section-head">
+        <p class="eyebrow">How I work</p>
+        <h2>My approach</h2>
+      </header>
+      <ol class="approach">
+        {APPROACH.map((step, i) => (
+          <li class="approach-step">
+            <span class="approach-num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="approach-label">{step}</span>
+          </li>
+        ))}
+      </ol>
     </section>
 
     <section class="about-section">
@@ -80,6 +136,55 @@ const links = [
           </div>
         ))}
       </div>
+    </section>
+
+    <section class="about-section two-col">
+      <div>
+        <header class="section-head">
+          <p class="eyebrow">Principles</p>
+          <h2>My values</h2>
+        </header>
+        <ul class="value-list">
+          {VALUES.map((v) => (
+            <li class="value-item">
+              <h3>{v.title}</h3>
+              <p>{v.desc}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="section-note">Values drive decisions.</p>
+      </div>
+      <div>
+        <header class="section-head">
+          <p class="eyebrow">Priorities</p>
+          <h2>What matters most</h2>
+        </header>
+        <ul class="value-list">
+          {PRIORITIES.map((v) => (
+            <li class="value-item">
+              <h3>{v.title}</h3>
+              <p>{v.desc}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="section-note">Leave it better than you found it.</p>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <header class="section-head">
+        <p class="eyebrow">Collaboration</p>
+        <h2>Who I work with</h2>
+      </header>
+      <ul class="collab-grid">
+        {COLLABORATORS.map((c) => (
+          <li class="collab-item">
+            <h3>{c.title}</h3>
+            <p>{c.desc}</p>
+          </li>
+        ))}
+        <li class="collab-item collab-note"><p class="gradient-text">Great work happens together!</p></li>
+      </ul>
     </section>
 
     {certGroups.length > 0 && (
@@ -121,6 +226,18 @@ const links = [
         </div>
       </section>
     )}
+
+    <section class="about-section">
+      <header class="section-head">
+        <p class="eyebrow">Looking ahead</p>
+        <h2>Career goals</h2>
+      </header>
+      <ul class="goals">
+        {CAREER_GOALS.map((g) => (
+          <li><span class="goal-check" aria-hidden="true"><Icon name="check" size={14} /></span>{g}</li>
+        ))}
+      </ul>
+    </section>
 
     <section class="contact-card">
       <div>
@@ -446,6 +563,185 @@ const links = [
     flex-wrap: wrap;
   }
 
+  .role-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+  }
+  .role-chips li {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    color: var(--color-primary);
+  }
+  .about-quote {
+    margin: 0 0 1.5rem;
+    padding: 0.25rem 0 0.25rem 1.1rem;
+    border-left: 3px solid var(--color-primary);
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+  .profile-loves { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); }
+  .profile-loves-title {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin: 0 0 0.6rem;
+  }
+  .profile-loves ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1rem; }
+  .profile-loves li { font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+  .profile-loves li::before { content: '♥'; color: var(--color-primary); font-size: 0.8rem; }
+
+  .mission-card {
+    margin-bottom: 4rem;
+    padding: 2rem 2.25rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    background:
+      linear-gradient(var(--color-bg-card), var(--color-bg-card)) padding-box,
+      var(--gradient-brand) border-box;
+    border-color: transparent;
+  }
+  .mission-text {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .do-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .do-card {
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .do-card:hover { border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border)); transform: translateY(-2px); }
+  .do-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+  .do-title { font-size: 1rem; font-weight: 700; margin: 0 0 0.4rem; }
+  .do-desc { margin: 0; font-size: 0.9rem; color: var(--color-text-muted); }
+
+  .approach {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.75rem;
+    counter-reset: none;
+  }
+  .approach-step {
+    position: relative;
+    padding: 1.1rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .approach-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-primary);
+    font-weight: 700;
+    z-index: 1;
+  }
+  .approach-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-primary); }
+  .approach-label { font-weight: 600; font-size: 0.92rem; line-height: 1.35; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  .value-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .value-item {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border-left: 3px solid var(--color-teal);
+  }
+  .value-item h3 { font-size: 0.95rem; font-weight: 700; margin: 0 0 0.25rem; }
+  .value-item p { margin: 0; font-size: 0.85rem; color: var(--color-text-muted); }
+  .section-note {
+    margin: 1rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-primary);
+  }
+
+  .collab-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+  .collab-item {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+  }
+  .collab-item h3 { font-size: 0.95rem; font-weight: 700; margin: 0 0 0.25rem; }
+  .collab-item p { margin: 0; font-size: 0.85rem; color: var(--color-text-muted); }
+  .collab-note { display: grid; place-items: center; text-align: center; border-style: dashed; }
+  .collab-note p { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+
+  .goals { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .goals li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    font-weight: 500;
+  }
+  .goal-check {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--gradient-button);
+    color: var(--color-on-primary);
+  }
+
+  @media (max-width: 1100px) {
+    .approach { grid-template-columns: repeat(3, 1fr); }
+    .approach-step:nth-child(3)::after { display: none; }
+  }
+  @media (max-width: 960px) {
+    .do-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .collab-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .do-grid, .value-list, .collab-grid, .goals { grid-template-columns: 1fr; }
+    .approach { grid-template-columns: 1fr 1fr; }
+    .approach-step::after { display: none; }
+    .mission-card { padding: 1.5rem; }
+  }
   @media (max-width: 960px) {
     .about-hero { grid-template-columns: 1fr; gap: 2.5rem; }
     .profile-card { position: static; order: -1; }
