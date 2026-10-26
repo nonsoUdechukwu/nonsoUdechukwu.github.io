@@ -15,7 +15,8 @@ export const AUTHOR = {
   role: 'AI · Platform Engineering · DevOps',
   title: 'Platform & DevOps Engineer',
   avatar: 'https://avatars.githubusercontent.com/u/35489366?v=4',
-  location: 'Lagos, Nigeria',
+  location: 'Netherlands',
+  origin: 'Nigeria',
   // Shown in the home page hero stats. Update to your real value.
   yearsExperience: '5+',
   bio: 'Platform & DevOps engineer exploring AI, cloud-native platforms, Kubernetes and automation on Azure.',
