@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { getAksUpdates, type AksUpdateKind } from '../utils/aks-updates';
+import { getCloudNativeUpdates, SERVICES, type UpdateKind } from '../utils/cloud-native-updates';
 
-const updates = await getAksUpdates();
+const updates = await getCloudNativeUpdates();
 const builtAt = new Date();
 
-const LABELS: Record<AksUpdateKind, string> = {
+const LABELS: Record<UpdateKind, string> = {
   ga: 'Generally available',
   preview: 'Preview',
   retirement: 'Retirement',
@@ -14,25 +14,34 @@ const LABELS: Record<AksUpdateKind, string> = {
 };
 const filters = [
   { key: 'all', label: 'All', count: updates.length },
-  ...(Object.keys(LABELS) as AksUpdateKind[])
+  ...(Object.keys(LABELS) as UpdateKind[])
     .map((k) => ({ key: k, label: LABELS[k], count: updates.filter((u) => u.kind === k).length }))
     .filter((f) => f.count > 0),
 ];
+const services = [
+  { key: 'all', label: 'All services', count: updates.length },
+  ...SERVICES.map((s) => ({ key: s.key, label: s.label, count: updates.filter((u) => u.services.includes(s.key)).length })).filter(
+    (s) => s.count > 0,
+  ),
+];
+const serviceLabel = Object.fromEntries(SERVICES.map((s) => [s.key, s.label]));
+const AZURE_UPDATES_URL = 'https://azure.microsoft.com/updates?category=containers';
 
 const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <BaseLayout
-  title="AKS Updates"
-  description="The latest Azure Kubernetes Service (AKS) announcements — new features, previews and retirements — pulled from Azure Updates."
+  title="Cloud-native updates"
+  description="The latest Azure cloud-native announcements — AKS, Container Apps, ACR and more — new features, previews and retirements from Azure Updates."
 >
-  <div class="container aks-page">
+  <div class="container updates-page">
     <header class="page-header">
       <p class="eyebrow">Tracker</p>
-      <h1 class="page-title">AKS <span class="gradient-text">updates</span></h1>
+      <h1 class="page-title">Cloud-native <span class="gradient-text">updates</span></h1>
       <p class="page-lede">
-        The latest Azure Kubernetes Service announcements — general availability, previews and retirements —
-        sourced from <a href="https://azure.microsoft.com/updates?filters=%5B%22Azure+Kubernetes+Service+%28AKS%29%22%5D" target="_blank" rel="noopener noreferrer">Azure Updates</a>.
+        The latest announcements across Azure's cloud-native services — AKS, Container Apps, Container Registry,
+        Fleet Manager and more. General availability, previews and retirements, sourced from
+        <a href={AZURE_UPDATES_URL} target="_blank" rel="noopener noreferrer">Azure Updates</a>.
       </p>
       <p class="page-description">Refreshed daily · last sync {fmt(builtAt)}</p>
     </header>
@@ -40,82 +49,101 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 
     {updates.length === 0 ? (
       <div class="empty">
         <p>Couldn't load updates right now.</p>
-        <a class="btn btn-secondary" href="https://azure.microsoft.com/updates?filters=%5B%22Azure+Kubernetes+Service+%28AKS%29%22%5D" target="_blank" rel="noopener noreferrer">
+        <a class="btn btn-secondary" href={AZURE_UPDATES_URL} target="_blank" rel="noopener noreferrer">
           View on Azure Updates <Icon name="arrow-up-right" size={14} />
         </a>
       </div>
     ) : (
       <>
+        <div class="filters services" role="group" aria-label="Filter by service">
+          {services.map((f, i) => (
+            <button type="button" class="filter" data-service={f.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {f.label} <span class="filter-count">{f.count}</span>
+            </button>
+          ))}
+        </div>
         <div class="toolbar">
-          <div class="filters" role="group" aria-label="Filter updates">
+          <div class="filters" role="group" aria-label="Filter by status">
             {filters.map((f, i) => (
-              <button type="button" class="filter" data-filter={f.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <button type="button" class="filter filter-sm" data-filter={f.key} aria-pressed={i === 0 ? 'true' : 'false'}>
                 {f.label} <span class="filter-count">{f.count}</span>
               </button>
             ))}
           </div>
           <label class="search">
             <Icon name="search" size={15} />
-            <input type="search" placeholder="Search updates…" aria-label="Search updates" data-aks-search />
+            <input type="search" placeholder="Search updates…" aria-label="Search updates" data-updates-search />
           </label>
         </div>
 
-        <ol class="updates" data-aks-list>
+        <ol class="updates" data-updates-list>
           {updates.map((u) => (
-            <li class="update" data-kind={u.kind} data-text={`${u.title} ${u.summary}`.toLowerCase()}>
+            <li class="update" data-kind={u.kind} data-services={u.services.join(' ')} data-text={`${u.title} ${u.summary}`.toLowerCase()}>
               <a href={u.url} target="_blank" rel="noopener noreferrer" class="update-link">
                 <div class="update-meta">
                   <span class={`status status-${u.kind}`}>{LABELS[u.kind]}</span>
                   <time datetime={u.date.toISOString()}>{fmt(u.date)}</time>
                 </div>
                 <h2 class="update-title">{u.title}</h2>
+                <div class="update-services">
+                  {u.services.map((k) => <span class="service-tag">{serviceLabel[k]}</span>)}
+                </div>
                 {u.summary && <p class="update-summary">{u.summary}</p>}
                 <span class="update-cta">Read on Azure Updates <Icon name="arrow-up-right" size={13} /></span>
               </a>
             </li>
           ))}
         </ol>
-        <p class="no-results" data-aks-empty hidden>No updates match your filters.</p>
+        <p class="no-results" data-updates-empty hidden>No updates match your filters.</p>
       </>
     )}
   </div>
 </BaseLayout>
 
 <script>
-  function initAksUpdates() {
-    const list = document.querySelector<HTMLElement>('[data-aks-list]');
+  function initUpdates() {
+    const list = document.querySelector<HTMLElement>('[data-updates-list]');
     if (!list) return;
     const items = [...list.querySelectorAll<HTMLElement>('.update')];
-    const buttons = [...document.querySelectorAll<HTMLButtonElement>('.filter')];
-    const search = document.querySelector<HTMLInputElement>('[data-aks-search]');
-    const empty = document.querySelector<HTMLElement>('[data-aks-empty]');
-    let filter = 'all';
+    const kindButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const serviceButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-service]')];
+    const search = document.querySelector<HTMLInputElement>('[data-updates-search]');
+    const empty = document.querySelector<HTMLElement>('[data-updates-empty]');
+    let kind = 'all';
+    let service = 'all';
 
     const apply = () => {
       const q = (search?.value ?? '').trim().toLowerCase();
       let shown = 0;
       for (const item of items) {
-        const visible = (filter === 'all' || item.dataset.kind === filter) && (!q || item.dataset.text!.includes(q));
+        const visible =
+          (kind === 'all' || item.dataset.kind === kind) &&
+          (service === 'all' || item.dataset.services!.split(' ').includes(service)) &&
+          (!q || item.dataset.text!.includes(q));
         item.hidden = !visible;
         if (visible) shown++;
       }
       if (empty) empty.hidden = shown > 0;
     };
 
-    for (const btn of buttons) {
-      btn.addEventListener('click', () => {
-        filter = btn.dataset.filter ?? 'all';
-        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-        apply();
-      });
-    }
+    const bind = (buttons: HTMLButtonElement[], set: (v: string) => void, attr: string) => {
+      for (const btn of buttons) {
+        btn.addEventListener('click', () => {
+          set(btn.getAttribute(attr) ?? 'all');
+          buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+          apply();
+        });
+      }
+    };
+    bind(kindButtons, (v) => (kind = v), 'data-filter');
+    bind(serviceButtons, (v) => (service = v), 'data-service');
     search?.addEventListener('input', apply);
   }
-  document.addEventListener('astro:page-load', initAksUpdates);
+  document.addEventListener('astro:page-load', initUpdates);
 </script>
 
 <style>
-  .aks-page { padding-top: 4rem; }
+  .updates-page { padding-top: 4rem; }
   .page-header { margin-bottom: 2.5rem; max-width: 760px; }
   .page-title {
     font-size: clamp(2.2rem, 5vw, 3.2rem);
@@ -164,6 +192,8 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 
     border-color: transparent;
     font-weight: 600;
   }
+  .services { margin-bottom: 1rem; }
+  .filter-sm { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
   .filter-count { font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.75; }
   .search {
     display: flex;
@@ -228,6 +258,15 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 
   .status-retirement { color: var(--color-danger); }
   .status-update { color: var(--color-text-muted); }
   .update-title { font-size: 1.05rem; font-weight: 700; line-height: 1.4; margin: 0 0 0.6rem; }
+  .update-services { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.75rem; }
+  .service-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-tag-bg);
+    color: var(--color-tag-text);
+  }
   .update-summary { margin: 0 0 1rem; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted); }
   .update-cta {
     margin-top: auto;
