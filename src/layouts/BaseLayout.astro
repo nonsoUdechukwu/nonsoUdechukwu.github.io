@@ -15,7 +15,7 @@ interface Props {
   publishedTime?: Date;
 }
 
-const { title, description = SITE.description, image = AUTHOR.avatar, type = 'website', publishedTime } = Astro.props;
+const { title, description = SITE.description, image = '/images/og-default.jpg', type = 'website', publishedTime } = Astro.props;
 const pageTitle = title ? `${title} | ${SITE.title}` : `${SITE.title} — ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
@@ -31,7 +31,9 @@ const ogImage = new URL(image, Astro.site);
     <meta name="description" content={description} />
     <meta name="author" content={AUTHOR.name} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#060a12" />
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
@@ -52,7 +54,7 @@ const ogImage = new URL(image, Astro.site);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@500;600;700;800&display=swap"
     />
 
     <script is:inline>

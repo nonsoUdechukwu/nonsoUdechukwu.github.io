@@ -6,509 +6,480 @@ import { AUTHOR, SOCIALS, TOPICS } from '../config';
 import { getPosts, getTags } from '../utils/posts';
 
 const posts = await getPosts();
-const recent = posts.slice(0, 3);
+const [featured, ...rest] = posts;
+const more = rest.slice(0, 4);
 const tags = getTags(posts);
+const orbitChips = ['Azure', 'Kubernetes', 'Terraform', 'AI'];
 ---
 
 <BaseLayout>
   <section class="hero">
     <div class="container hero-inner">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          {AUTHOR.role}
-        </div>
+      <div class="hero-content animate-fade-in">
+        <p class="eyebrow">{AUTHOR.role}</p>
         <h1 class="hero-title">
-          Hi, I'm <span class="gradient-text">{AUTHOR.name}</span>
+          Building <span class="gradient-text">intelligent platforms</span> for the cloud.
         </h1>
         <p class="hero-description">
-          I write about Azure, DevOps, Kubernetes, Platform Engineering and Infrastructure as Code. Practical,
-          hands-on guides from real-world projects and my home lab.
+          I'm <strong>{AUTHOR.fullName}</strong> — a {AUTHOR.title} writing hands-on guides on AI, Azure,
+          Kubernetes, Infrastructure as Code and the home lab where I test it all.
         </p>
         <div class="hero-actions">
           <a href="/blog" class="btn btn-primary">
-            <Icon name="book" size={16} /> Read the Blog
+            Explore articles <Icon name="arrow-right" size={16} />
           </a>
-          <a href="/about" class="btn btn-secondary">About Me</a>
+          <a href="/about" class="btn btn-secondary">About me</a>
         </div>
-        <div class="hero-stats">
+        <dl class="hero-stats">
           <div class="stat">
-            <span class="stat-value">{posts.length}</span>
-            <span class="stat-label">{posts.length === 1 ? 'Article' : 'Articles'}</span>
+            <dt>{posts.length === 1 ? 'Article' : 'Articles'}</dt>
+            <dd>{String(posts.length).padStart(2, '0')}</dd>
           </div>
-          <div class="stat-divider"></div>
           <div class="stat">
-            <span class="stat-value">{tags.length}</span>
-            <span class="stat-label">{tags.length === 1 ? 'Topic' : 'Topics'}</span>
+            <dt>{tags.length === 1 ? 'Topic' : 'Topics'}</dt>
+            <dd>{String(tags.length).padStart(2, '0')}</dd>
           </div>
-          <div class="stat-divider"></div>
           <div class="stat">
-            <span class="stat-value">{AUTHOR.yearsExperience}</span>
-            <span class="stat-label">Years Experience</span>
+            <dt>Years in tech</dt>
+            <dd>{AUTHOR.yearsExperience}</dd>
           </div>
-        </div>
+        </dl>
       </div>
 
       <div class="hero-visual" aria-hidden="true">
-        <div class="terminal">
-          <div class="terminal-header">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <span class="terminal-title">nonso@homelab: ~</span>
+        <div class="orb">
+          <span class="ring ring-1"></span>
+          <span class="ring ring-2"></span>
+          <span class="ring ring-3"></span>
+          <div class="orb-core">
+            <img src="/images/logo-eye.jpg" alt="" width="900" height="650" />
           </div>
-          <div class="terminal-body" id="termBody"></div>
+          {orbitChips.map((chip, i) => <span class={`chip chip-${i + 1}`}>{chip}</span>)}
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section topics-section">
+  <section class="section">
     <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">What I Write About</h2>
-        <a href="/tags" class="section-link">All topics →</a>
-      </div>
+      <header class="section-header">
+        <div>
+          <p class="eyebrow">Focus areas</p>
+          <h2 class="section-title">What I write about</h2>
+        </div>
+        <a href="/tags" class="section-link">Browse all tags <Icon name="arrow-right" size={14} /></a>
+      </header>
       <div class="topics-grid">
-        {TOPICS.map((topic) => (
-          <a href={`/tags/${topic.tag}`} class="topic-card">
-            <div class={`topic-icon topic-icon--${topic.icon}`}>
-              <Icon name={topic.icon} size={22} />
+        {TOPICS.map((topic, i) => (
+          <a href={`/tags/${topic.tag}`} class:list={['topic-card', { 'topic-card--featured': topic.featured }]}>
+            <div class="topic-top">
+              <span class="topic-icon"><Icon name={topic.icon} size={20} /></span>
+              <span class="topic-index">{String(i + 1).padStart(2, '0')}</span>
             </div>
-            <div class="topic-content">
-              <h3 class="topic-name">{topic.name}</h3>
-              <p class="topic-desc">{topic.desc}</p>
-            </div>
+            <h3 class="topic-name">{topic.name}</h3>
+            <p class="topic-desc">{topic.desc}</p>
+            <span class="topic-arrow"><Icon name="arrow-up-right" size={16} /></span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section recent-posts-section">
+  <section class="section">
     <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">Recent Posts</h2>
-        <a href="/blog" class="section-link">View all →</a>
-      </div>
-      {recent.length > 0 ? (
-        <div class="posts-grid">
-          {recent.map((post) => <BlogCard post={post} />)}
+      <header class="section-header">
+        <div>
+          <p class="eyebrow">Latest writing</p>
+          <h2 class="section-title">Fresh from the blog</h2>
+        </div>
+        <a href="/blog" class="section-link">All articles <Icon name="arrow-right" size={14} /></a>
+      </header>
+      {featured ? (
+        <div class="posts-layout">
+          <BlogCard post={featured} featured />
+          {more.length > 0 && <div class="posts-grid">{more.map((post) => <BlogCard post={post} />)}</div>}
         </div>
       ) : (
         <p class="empty">No posts yet — check back soon.</p>
       )}
-      <div class="view-all-cta">
-        <a href="/blog" class="btn btn-secondary">View All Posts</a>
-      </div>
     </div>
   </section>
 
   <section class="section cta-section">
     <div class="container">
-      <div class="cta-card">
+      <div class="cta-panel">
         <div class="cta-content">
-          <h2 class="cta-title">Stay Updated</h2>
+          <p class="eyebrow">Stay in the loop</p>
+          <h2 class="cta-title">Signal, not noise.</h2>
           <p class="cta-description">
-            Subscribe via RSS to get new articles about Azure, DevOps and Kubernetes as soon as they're published. No
-            spam, just a lightweight feed.
+            New deep-dives on AI, platform engineering and DevOps land in the RSS feed the moment they're published.
           </p>
           <div class="cta-actions">
-            <a href="/rss.xml" class="btn btn-primary">
-              <Icon name="rss" size={16} /> Subscribe via RSS
-            </a>
+            <a href="/rss.xml" class="btn btn-primary"><Icon name="rss" size={16} /> Subscribe via RSS</a>
             <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-              <Icon name="github" size={16} /> Follow on GitHub
+              <Icon name="github" size={16} /> GitHub
             </a>
           </div>
         </div>
-        <div class="cta-decoration" aria-hidden="true">
-          <div class="decoration-circle c1"></div>
-          <div class="decoration-circle c2"></div>
-          <div class="decoration-circle c3"></div>
+        <div class="cta-art" aria-hidden="true">
+          <img src="/images/logo-eye.jpg" alt="" width="900" height="650" loading="lazy" />
         </div>
       </div>
     </div>
   </section>
 </BaseLayout>
 
-<script>
-  type Seg = [string, string?];
-  type Step = { cmd: Seg[]; out: { text: string; ok?: boolean }[] };
-
-  const script: Step[] = [
-    {
-      cmd: [['az', 'th-bin'], [' login', 'th-sub'], [' --tenant', 'th-flag'], [' nonsotech', 'th-val']],
-      out: [{ text: '✓ Logged in to Azure', ok: true }],
-    },
-    {
-      cmd: [['terraform', 'th-bin'], [' apply', 'th-sub'], [' -auto-approve', 'th-flag']],
-      out: [{ text: 'azurerm_kubernetes_cluster.aks: Creation complete' }, { text: 'Apply complete! Resources: 12 added.', ok: true }],
-    },
-    {
-      cmd: [['kubectl', 'th-bin'], [' get', 'th-sub'], [' nodes', 'th-val']],
-      out: [
-        { text: 'aks-system-0   Ready   v1.31' },
-        { text: 'aks-user-0     Ready   v1.31' },
-      ],
-    },
-    {
-      cmd: [['git', 'th-bin'], [' push', 'th-sub'], [' origin', 'th-val'], [' main', 'th-path']],
-      out: [{ text: '✓ Pipeline succeeded — deployed', ok: true }],
-    },
-  ];
-
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const sleep = (ms: number) => new Promise<void>((r) => (timer = setTimeout(r, ms)));
-
-  async function run(body: HTMLElement, token: { active: boolean }) {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    while (token.active) {
-      body.innerHTML = '';
-      for (const step of script) {
-        const line = document.createElement('div');
-        line.className = 'terminal-line';
-        line.innerHTML = '<span class="prompt">$ </span>';
-        const cursor = document.createElement('span');
-        cursor.className = 'cursor';
-        cursor.textContent = '▋';
-        line.appendChild(cursor);
-        body.appendChild(line);
-        for (const [text, cls] of step.cmd) {
-          const span = document.createElement('span');
-          if (cls) span.className = cls;
-          line.insertBefore(span, cursor);
-          for (const ch of text) {
-            if (!token.active) return;
-            span.textContent += ch;
-            await sleep(reduced ? 0 : 45);
-          }
-        }
-        await sleep(reduced ? 0 : 350);
-        cursor.remove();
-        for (const o of step.out) {
-          const out = document.createElement('div');
-          out.className = 'terminal-output' + (o.ok ? ' success' : '');
-          out.textContent = o.text;
-          body.appendChild(out);
-          await sleep(reduced ? 0 : 180);
-        }
-        await sleep(reduced ? 0 : 600);
-      }
-      const idle = document.createElement('div');
-      idle.className = 'terminal-line';
-      idle.innerHTML = '<span class="prompt">$ </span><span class="cursor">▋</span>';
-      body.appendChild(idle);
-      if (reduced) return;
-      await sleep(4000);
-    }
-  }
-
-  let token = { active: false };
-  document.addEventListener('astro:page-load', () => {
-    token.active = false;
-    clearTimeout(timer);
-    const body = document.getElementById('termBody');
-    if (!body) return;
-    token = { active: true };
-    run(body, token);
-  });
-</script>
-
 <style>
+  /* Hero */
   .hero {
-    padding: 5rem 0 4rem;
     position: relative;
+    padding: 5.5rem 0 4.5rem;
     overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -20%;
-    width: 60%;
-    height: 150%;
-    background: radial-gradient(ellipse, rgba(88, 166, 255, 0.06) 0%, transparent 70%);
-    pointer-events: none;
   }
   .hero-inner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 3.5rem;
     align-items: center;
-    position: relative;
-  }
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
-    background: var(--color-tag-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 100px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-tag-text);
-    margin-bottom: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .badge-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--color-success);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
   }
   .hero-title {
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    line-height: 1.15;
-    margin-bottom: 1.25rem;
-  }
-  .gradient-text {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 1.1rem 0 1.4rem;
   }
   .hero-description {
-    font-size: 1.1rem;
+    font-size: 1.12rem;
     color: var(--color-text-muted);
-    line-height: 1.7;
-    max-width: 50ch;
-    margin-bottom: 2rem;
+    max-width: 52ch;
+    margin-bottom: 2.2rem;
   }
+  .hero-description strong { color: var(--color-text); font-weight: 600; }
   .hero-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.85rem;
     flex-wrap: wrap;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.75rem;
   }
   .hero-stats {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 460px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-bg-card) 65%, transparent);
+    overflow: hidden;
   }
   .stat {
     display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
+    flex-direction: column-reverse;
+    gap: 0.3rem;
+    padding: 0.95rem 1.1rem;
   }
-  .stat-value {
-    font-size: 1.5rem;
+  .stat + .stat { border-left: 1px solid var(--color-border); }
+  .stat dd {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
     font-weight: 800;
-    color: var(--color-primary);
     line-height: 1;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-  .stat-label {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
+  .stat dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .stat-divider {
-    width: 1px;
-    height: 32px;
-    background: var(--color-border);
+    color: var(--color-text-muted);
   }
 
+  /* Orb visual built around the logo */
   .hero-visual {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
   }
-  .terminal {
-    background: #0d1117;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: var(--shadow-lg);
-    font-family: var(--font-mono);
+  .orb {
+    position: relative;
+    width: min(440px, 82vw);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
   }
-  .terminal-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
-  }
-  .dot {
-    width: 12px;
-    height: 12px;
+  .orb::before {
+    content: '';
+    position: absolute;
+    inset: 12%;
     border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 35%, transparent), transparent 70%);
+    filter: blur(30px);
   }
-  .dot-red { background: #ff5f57; }
-  .dot-yellow { background: #febc2e; }
-  .dot-green { background: #28c840; }
-  .terminal-title {
-    margin-left: auto;
-    font-size: 0.75rem;
-    color: #8b949e;
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
   }
-  .terminal-body {
-    padding: 1.25rem;
-    font-size: 0.8rem;
-    line-height: 1.7;
-    color: #c9d1d9;
-    min-height: 290px;
+  .ring-1 { inset: 0; border-style: dashed; animation: spin 60s linear infinite; }
+  .ring-2 {
+    inset: 8%;
+    border-color: transparent;
+    border-top-color: var(--color-primary);
+    border-right-color: color-mix(in srgb, var(--color-blue) 70%, transparent);
+    animation: spin 14s linear infinite reverse;
   }
-  .terminal-body :global(.terminal-line) { color: #c9d1d9; margin-top: 0.35rem; }
-  .terminal-body :global(.terminal-line:first-child) { margin-top: 0; }
-  .terminal-body :global(.prompt) { color: #3fb950; font-weight: 600; }
-  .terminal-body :global(.terminal-output) { color: #8b949e; padding-left: 1rem; }
-  .terminal-body :global(.terminal-output.success) { color: #3fb950; }
-  .terminal-body :global(.th-bin) { color: #79c0ff; font-weight: 600; }
-  .terminal-body :global(.th-sub) { color: #d2a8ff; }
-  .terminal-body :global(.th-flag) { color: #ffa657; }
-  .terminal-body :global(.th-val) { color: #a5d6ff; }
-  .terminal-body :global(.th-path) { color: #7ee787; }
-  .terminal-body :global(.cursor) { animation: pulse 1s step-end infinite; color: #c9d1d9; }
+  .ring-3 { inset: 16%; border-color: color-mix(in srgb, var(--color-teal) 25%, transparent); }
+  .orb-core {
+    position: relative;
+    width: 66%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #10141b;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 40%, transparent), 0 30px 80px -20px rgba(34, 211, 238, 0.55);
+  }
+  .orb-core img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.25);
+  }
+  .chip {
+    position: absolute;
+    padding: 0.35rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-bg-card) 85%, transparent);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(6px);
+    box-shadow: var(--shadow-md);
+    animation: float 6s ease-in-out infinite;
+  }
+  .chip::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 8px var(--color-primary);
+    vertical-align: middle;
+  }
+  .chip-1 { top: 10%; left: 2%; }
+  .chip-2 { top: 18%; right: -2%; animation-delay: -1.5s; }
+  .chip-3 { bottom: 16%; left: -3%; animation-delay: -3s; }
+  .chip-4 { bottom: 8%; right: 8%; animation-delay: -4.5s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
 
+  /* Section headers */
   .section-header {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 2rem;
+    margin-bottom: 2.25rem;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 1rem;
   }
   .section-title {
-    font-size: 1.75rem;
+    font-size: clamp(1.6rem, 3.2vw, 2.2rem);
     font-weight: 800;
+    margin-top: 0.6rem;
   }
   .section-link {
-    color: var(--color-primary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--color-border-strong);
   }
-  .section-link:hover { color: var(--color-primary-hover); }
+  .section-link:hover { color: var(--color-primary); border-color: var(--color-primary); }
 
-  .topics-section {
-    background: var(--color-bg-secondary);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-  }
+  /* Topics */
   .topics-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
   }
   .topic-card {
+    position: relative;
     display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1.25rem;
-    background: var(--color-bg-card);
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.4rem;
+    background: color-mix(in srgb, var(--color-bg-card) 80%, transparent);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    text-decoration: none;
     color: var(--color-text);
+    overflow: hidden;
     transition: all var(--transition);
   }
-  .topic-card:hover {
-    border-color: var(--color-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    color: var(--color-text);
+  .topic-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -30% -60% auto;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 22%, transparent), transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition);
   }
-  .topic-icon {
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
+  .topic-card:hover {
+    color: var(--color-text);
+    border-color: color-mix(in srgb, var(--color-primary) 50%, var(--color-border));
+    transform: translateY(-3px);
+  }
+  .topic-card:hover::after { opacity: 1; }
+  .topic-top {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+  .topic-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
     border-radius: var(--radius-md);
-    color: var(--topic-color);
-    background: color-mix(in srgb, var(--topic-color) 14%, transparent);
+    color: var(--color-primary);
+    background: var(--color-tag-bg);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
   }
-  .topic-icon--azure { --topic-color: #3d8bff; }
-  .topic-icon--kubernetes { --topic-color: #5b8def; }
-  .topic-icon--devops { --topic-color: #3fb950; }
-  .topic-icon--iac { --topic-color: #a78bfa; }
-  .topic-icon--platform { --topic-color: #f0883e; }
-  .topic-icon--homelab { --topic-color: #db61a2; }
-  .topic-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
+  .topic-index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
   }
+  .topic-name { font-size: 1.02rem; font-weight: 700; }
   .topic-desc {
-    font-size: 0.8rem;
+    font-size: 0.86rem;
     color: var(--color-text-muted);
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.55;
   }
+  .topic-arrow {
+    position: absolute;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    color: var(--color-primary);
+    opacity: 0;
+    transform: translate(-4px, 4px);
+    transition: all var(--transition);
+  }
+  .topic-card:hover .topic-arrow { opacity: 1; transform: none; }
+  .topic-card--featured {
+    grid-column: span 2;
+    background:
+      radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--color-primary) 16%, transparent), transparent 60%),
+      color-mix(in srgb, var(--color-bg-card) 85%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+  }
+  .topic-card--featured .topic-icon {
+    background: var(--gradient-button);
+    color: var(--color-on-primary);
+    border: none;
+  }
+  .topic-card--featured .topic-name { font-size: 1.25rem; }
 
+  /* Posts */
+  .posts-layout {
+    display: grid;
+    gap: 1.5rem;
+  }
   .posts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
   .empty { color: var(--color-text-muted); }
-  .view-all-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: 2.5rem;
-  }
 
-  .cta-section { padding-top: 0; }
-  .cta-card {
+  /* CTA */
+  .cta-section { padding-top: 1rem; }
+  .cta-panel {
     position: relative;
-    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-card) 100%);
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    align-items: center;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
-    padding: 3.5rem;
+    background:
+      radial-gradient(ellipse at 0% 100%, color-mix(in srgb, var(--color-blue) 14%, transparent), transparent 55%),
+      var(--color-bg-card);
     overflow: hidden;
-    text-align: center;
   }
   .cta-content {
     position: relative;
     z-index: 1;
+    padding: 3.25rem;
   }
   .cta-title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    margin: 0.75rem 0 1rem;
   }
   .cta-description {
     color: var(--color-text-muted);
     font-size: 1.05rem;
-    max-width: 50ch;
-    margin: 0 auto 2rem;
+    max-width: 46ch;
+    margin-bottom: 2rem;
   }
   .cta-actions {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
+    gap: 0.85rem;
     flex-wrap: wrap;
   }
-  .cta-decoration {
+  .cta-art {
+    align-self: stretch;
+    position: relative;
+    background: #10141b;
+    min-height: 280px;
+  }
+  .cta-art img {
     position: absolute;
     inset: 0;
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
-  .decoration-circle {
+  .cta-art::before {
+    content: '';
     position: absolute;
-    border-radius: 50%;
-    opacity: 0.1;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(90deg, var(--color-bg-card) 0%, transparent 45%);
   }
-  .c1 { width: 300px; height: 300px; background: var(--color-primary); top: -150px; right: -100px; }
-  .c2 { width: 200px; height: 200px; background: #a78bfa; bottom: -100px; left: -50px; }
-  .c3 { width: 100px; height: 100px; background: var(--color-success); bottom: 50px; right: 15%; }
 
   @media (max-width: 1024px) {
-    .topics-grid,
-    .posts-grid { grid-template-columns: repeat(2, 1fr); }
+    .topics-grid { grid-template-columns: repeat(2, 1fr); }
   }
-  @media (max-width: 768px) {
-    .hero { padding: 3rem 0 2.5rem; }
-    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-    .hero-visual { justify-content: center; }
+  @media (max-width: 860px) {
+    .hero { padding: 3.5rem 0 3rem; }
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-visual { order: -1; }
+    .orb { width: min(320px, 78vw); }
+    .cta-panel { grid-template-columns: 1fr; }
+    .cta-art { min-height: 200px; order: -1; }
+    .cta-art::before { background: linear-gradient(0deg, var(--color-bg-card) 0%, transparent 60%); }
+    .cta-content { padding: 2rem 1.5rem 2.5rem; }
+  }
+  @media (max-width: 600px) {
     .topics-grid,
     .posts-grid { grid-template-columns: 1fr; }
-    .cta-card { padding: 2.5rem 1.5rem; }
+    .topic-card--featured { grid-column: auto; }
+    .chip { font-size: 0.65rem; }
   }
 </style>

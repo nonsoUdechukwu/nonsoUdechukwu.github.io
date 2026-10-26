@@ -4,70 +4,97 @@ import { getPosts, getTags } from '../../utils/posts';
 
 const posts = await getPosts();
 const tags = getTags(posts);
+const max = Math.max(1, ...tags.map((t) => t.count));
 ---
 
 <BaseLayout title="Tags" description="Browse articles by topic.">
   <div class="container tags-page">
     <header class="page-header">
-      <h1 class="page-title">All Tags</h1>
+      <p class="eyebrow">Index</p>
+      <h1 class="page-title">Browse by <span class="gradient-text">topic</span></h1>
       <p class="page-description">
-        Browse articles by topic. {tags.length} {tags.length === 1 ? 'tag' : 'tags'} across {posts.length}
-        {posts.length === 1 ? 'article' : 'articles'}.
+        {tags.length} {tags.length === 1 ? 'tag' : 'tags'} across {posts.length} {posts.length === 1 ? 'article' : 'articles'}.
       </p>
     </header>
-    <div class="tags-grid">
-      {tags.map((tag) => (
-        <a href={`/tags/${tag.slug}`} class="tag-card">
-          <span class="tag-name">#{tag.name}</span>
-          <span class="tag-count">{tag.count} {tag.count === 1 ? 'post' : 'posts'}</span>
-        </a>
+    <ol class="tags-list">
+      {tags.map((tag, i) => (
+        <li>
+          <a href={`/tags/${tag.slug}`} class="tag-row" style={`--pct:${(tag.count / max) * 100}%`}>
+            <span class="tag-index">{String(i + 1).padStart(2, '0')}</span>
+            <span class="tag-name"><span class="hash">#</span>{tag.name}</span>
+            <span class="tag-bar" aria-hidden="true"><span></span></span>
+            <span class="tag-count">{tag.count} {tag.count === 1 ? 'post' : 'posts'}</span>
+          </a>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
 </BaseLayout>
 
 <style>
-  .tags-page { padding: 3rem 1.5rem 0; }
-  .page-header { margin-bottom: 3rem; }
+  .tags-page { padding-top: 4rem; }
+  .page-header { margin-bottom: 2.5rem; }
   .page-title {
-    font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: 0.75rem;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0.8rem 0 0.75rem;
   }
   .page-description {
     color: var(--color-text-muted);
-    font-size: 1.05rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     margin: 0;
   }
-  .tags-grid {
+  .tags-list {
+    list-style: none;
+    border-top: 1px solid var(--color-border);
+  }
+  .tag-row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
+    grid-template-columns: 3rem minmax(0, 1.2fr) minmax(0, 2fr) 6rem;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.15rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    transition: background var(--transition), padding var(--transition);
   }
-  .tag-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    padding: 1.25rem;
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    transition: all var(--transition);
+  .tag-row:hover {
+    background: linear-gradient(90deg, var(--color-tag-bg), transparent);
+    padding-left: 1.25rem;
+    color: var(--color-text);
   }
-  .tag-card:hover {
-    border-color: var(--color-primary);
-    background: var(--color-tag-bg);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-  .tag-name {
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-primary);
-  }
+  .tag-index,
   .tag-count {
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     color: var(--color-text-muted);
+  }
+  .tag-count { text-align: right; }
+  .tag-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .hash { color: var(--color-primary); margin-right: 0.1rem; }
+  .tag-bar {
+    height: 4px;
+    border-radius: 4px;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+  .tag-bar span {
+    display: block;
+    height: 100%;
+    width: var(--pct);
+    background: var(--gradient-brand);
+    border-radius: inherit;
+  }
+  @media (max-width: 640px) {
+    .tag-row { grid-template-columns: 2.25rem 1fr auto; }
+    .tag-bar { display: none; }
   }
 </style>
