@@ -37,7 +37,7 @@ export const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
   { href: '/tags', label: 'Tags' },
-  { href: '/cloud-native-updates', label: 'Updates' },
+  { href: '/radar', label: 'Radar' },
   { href: '/about', label: 'About' },
 ];
 
