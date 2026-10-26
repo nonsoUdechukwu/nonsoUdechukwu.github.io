@@ -72,13 +72,6 @@ export const COLLABORATORS: { title: string; desc: string }[] = [
   { title: 'Community & Learners', desc: 'Peers, Mentors, Next-Gen Engineers' },
 ];
 
-export const CAREER_GOALS: string[] = [
-  'Grow as a Platform & Engineering Leader',
-  'Build AI-driven, developer-centric platforms',
-  'Help teams and businesses scale with confidence',
-  'Continue learning and creating impact',
-];
-
 export type Certification = { code: string; name: string };
 export type CertificationGroup = {
   issuer: string;

@@ -5,7 +5,6 @@ import { AUTHOR, SOCIALS } from '../config';
 import {
   ABOUT,
   APPROACH,
-  CAREER_GOALS,
   CERTIFICATIONS,
   COLLABORATORS,
   PRIORITIES,
@@ -226,18 +225,6 @@ const links = [
         </div>
       </section>
     )}
-
-    <section class="about-section">
-      <header class="section-head">
-        <p class="eyebrow">Looking ahead</p>
-        <h2>Career goals</h2>
-      </header>
-      <ul class="goals">
-        {CAREER_GOALS.map((g) => (
-          <li><span class="goal-check" aria-hidden="true"><Icon name="check" size={14} /></span>{g}</li>
-        ))}
-      </ul>
-    </section>
 
     <section class="contact-card">
       <div>
@@ -705,28 +692,6 @@ const links = [
   .collab-note { display: grid; place-items: center; text-align: center; border-style: dashed; }
   .collab-note p { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
 
-  .goals { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  .goals li {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.9rem 1.1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background: var(--color-bg-card);
-    font-weight: 500;
-  }
-  .goal-check {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--gradient-button);
-    color: var(--color-on-primary);
-  }
-
   @media (max-width: 1100px) {
     .approach { grid-template-columns: repeat(3, 1fr); }
     .approach-step:nth-child(3)::after { display: none; }
@@ -737,7 +702,7 @@ const links = [
     .collab-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 600px) {
-    .do-grid, .value-list, .collab-grid, .goals { grid-template-columns: 1fr; }
+    .do-grid, .value-list, .collab-grid { grid-template-columns: 1fr; }
     .approach { grid-template-columns: 1fr 1fr; }
     .approach-step::after { display: none; }
     .mission-card { padding: 1.5rem; }
