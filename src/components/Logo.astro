@@ -1,0 +1,42 @@
+---
+import { SITE } from '../config';
+
+const gradientId = `logo-gradient-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<a href="/" class="logo" aria-label={`${SITE.title} - Home`}>
+  <span class="logo-mark" aria-hidden="true">
+    <svg viewBox="0 0 32 32" width="32" height="32">
+      <defs>
+        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#58a6ff" />
+          <stop offset="100%" stop-color="#a78bfa" />
+        </linearGradient>
+      </defs>
+      <rect width="32" height="32" rx="8" fill={`url(#${gradientId})`} />
+      <path d="M9 23V9h2.6l7.8 9.6V9H22v14h-2.6L11.6 13.4V23z" fill="#fff" />
+    </svg>
+  </span>
+  <span class="logo-text">Nonso<span class="logo-accent">Tech</span></span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: opacity var(--transition);
+  }
+  .logo:hover { opacity: 0.8; }
+  .logo-mark { display: flex; }
+  .logo-mark svg { border-radius: var(--radius-md); }
+  .logo-text {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+  .logo-accent { color: var(--color-primary); }
+</style>

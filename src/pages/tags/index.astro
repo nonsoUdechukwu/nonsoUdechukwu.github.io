@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPosts, getTags } from '../../utils/posts';
+
+const posts = await getPosts();
+const tags = getTags(posts);
+---
+
+<BaseLayout title="Tags" description="Browse articles by topic.">
+  <div class="container tags-page">
+    <header class="page-header">
+      <h1 class="page-title">All Tags</h1>
+      <p class="page-description">
+        Browse articles by topic. {tags.length} {tags.length === 1 ? 'tag' : 'tags'} across {posts.length}
+        {posts.length === 1 ? 'article' : 'articles'}.
+      </p>
+    </header>
+    <div class="tags-grid">
+      {tags.map((tag) => (
+        <a href={`/tags/${tag.slug}`} class="tag-card">
+          <span class="tag-name">#{tag.name}</span>
+          <span class="tag-count">{tag.count} {tag.count === 1 ? 'post' : 'posts'}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tags-page { padding: 3rem 1.5rem 0; }
+  .page-header { margin-bottom: 3rem; }
+  .page-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 0.75rem;
+  }
+  .page-description {
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .tags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  .tag-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.25rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: all var(--transition);
+  }
+  .tag-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-tag-bg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .tag-name {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  .tag-count {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+</style>
