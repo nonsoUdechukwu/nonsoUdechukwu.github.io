@@ -7,54 +7,60 @@ import { ABOUT, CERTIFICATIONS, SKILLS } from '../data/about';
 const links = [
   { href: SOCIALS.github, label: 'GitHub', icon: 'github' },
   { href: SOCIALS.linkedin, label: 'LinkedIn', icon: 'linkedin' },
-  { href: SOCIALS.x, label: 'X / Twitter', icon: 'x' },
+  { href: SOCIALS.x, label: 'X', icon: 'x' },
   { href: SOCIALS.email, label: 'Email', icon: 'email' },
 ];
 ---
 
-<BaseLayout title="About" description={`About ${AUTHOR.name} — ${AUTHOR.role}.`}>
-  <div class="container--narrow about-page">
+<BaseLayout title="About" description={`About ${AUTHOR.fullName} — ${AUTHOR.role}.`}>
+  <div class="container about-page">
     <section class="about-hero">
-      <img src={AUTHOR.avatar} alt={AUTHOR.name} class="about-avatar" width="96" height="96" />
-      <div class="about-hero-content">
-        <h1 class="about-name">{AUTHOR.name}</h1>
+      <div class="about-intro">
+        <p class="eyebrow">About</p>
+        <h1 class="about-name">{AUTHOR.fullName}</h1>
         <p class="about-role">{AUTHOR.role}</p>
-        <div class="about-badges">
-          {ABOUT.badges.map((b) => <span class="about-badge">{b}</span>)}
+        <div class="about-text prose">
+          {ABOUT.paragraphs.map((p) => <p set:html={p} />)}
         </div>
-        <p class="about-location">
-          <Icon name="map-pin" size={14} /> {AUTHOR.location}
-        </p>
         <div class="about-links">
           {links.map((l) => (
-            <a href={l.href} class="btn btn-secondary btn-sm" {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
-              <Icon name={l.icon} size={14} /> {l.label}
+            <a href={l.href} class="social-pill" {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+              <Icon name={l.icon} size={15} /> {l.label}
             </a>
           ))}
         </div>
       </div>
+
+      <aside class="profile-card">
+        <div class="portrait">
+          <span class="portrait-ring" aria-hidden="true"></span>
+          <img src={AUTHOR.avatar} alt={AUTHOR.fullName} width="180" height="180" />
+        </div>
+        <dl class="profile-facts">
+          <div><dt>Role</dt><dd>{AUTHOR.title}</dd></div>
+          <div><dt>Based in</dt><dd>{AUTHOR.location}</dd></div>
+          <div><dt>Experience</dt><dd>{AUTHOR.yearsExperience} years</dd></div>
+        </dl>
+        <div class="profile-badges">
+          {ABOUT.badges.map((b) => <span class="tag">{b}</span>)}
+        </div>
+      </aside>
     </section>
 
     <section class="about-section">
-      <h2 class="section-heading">About Me</h2>
-      <div class="prose about-text">
-        {ABOUT.paragraphs.map((p) => <p set:html={p} />)}
-      </div>
-    </section>
-
-    <section class="about-section">
-      <h2 class="section-heading">Technical Skills</h2>
+      <header class="section-head">
+        <p class="eyebrow">Toolbox</p>
+        <h2>Skills &amp; stack</h2>
+      </header>
       <div class="skills-grid">
-        {SKILLS.map((group) => (
+        {SKILLS.map((group, i) => (
           <div class="skill-group">
-            <h3 class="skill-category">{group.category}</h3>
+            <div class="skill-head">
+              <h3 class="skill-category">{group.category}</h3>
+              <span class="skill-index">{String(i + 1).padStart(2, '0')}</span>
+            </div>
             <ul class="skill-list">
-              {group.items.map((item) => (
-                <li class="skill-item">
-                  <span class="skill-dot" aria-hidden="true"></span>
-                  {item}
-                </li>
-              ))}
+              {group.items.map((item) => <li>{item}</li>)}
             </ul>
           </div>
         ))}
@@ -63,148 +69,189 @@ const links = [
 
     {CERTIFICATIONS.length > 0 && (
       <section class="about-section">
-        <h2 class="section-heading">Certifications</h2>
-        <div class="cert-group">
-          <ul class="certs-list">
-            {CERTIFICATIONS.map((c) => (
-              <li class="cert-item">
-                <span class="cert-badge" style={`border-color:${c.color ?? 'var(--color-primary)'}`}>
-                  <span class="cert-code">{c.code}</span>
-                </span>
-                <span class="cert-name">{c.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <header class="section-head">
+          <p class="eyebrow">Credentials</p>
+          <h2>Certifications</h2>
+        </header>
+        <ul class="certs-list">
+          {CERTIFICATIONS.map((c) => (
+            <li class="cert-item">
+              <span class="cert-code" style={c.color ? `--cert:${c.color}` : undefined}>{c.code}</span>
+              <span class="cert-name">{c.name}</span>
+            </li>
+          ))}
+        </ul>
       </section>
     )}
 
-    <section class="about-section">
-      <h2 class="section-heading">Get In Touch</h2>
-      <div class="contact-card">
-        <p>
-          Have a question, want to collaborate, or just want to talk Azure and DevOps? I'm always happy to connect with
-          fellow engineers.
+    <section class="contact-card">
+      <div>
+        <p class="eyebrow">Let's talk</p>
+        <h2 class="contact-title">Building something interesting?</h2>
+        <p class="contact-text">
+          Questions, collaborations or just a chat about AI, platforms and DevOps — my inbox is open.
         </p>
-        <div class="contact-actions">
-          <a href={SOCIALS.email} class="btn btn-primary"><Icon name="email" size={16} /> Send an Email</a>
-          <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-            <Icon name="linkedin" size={16} /> Connect on LinkedIn
-          </a>
-        </div>
+      </div>
+      <div class="contact-actions">
+        <a href={SOCIALS.email} class="btn btn-primary"><Icon name="email" size={16} /> Send an email</a>
+        <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+          <Icon name="linkedin" size={16} /> LinkedIn
+        </a>
       </div>
     </section>
   </div>
 </BaseLayout>
 
 <style>
-  .about-page { padding: 3rem 1.5rem 0; }
+  .about-page { padding-top: 4rem; }
   .about-hero {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    padding: 2.5rem;
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xl);
-    margin-bottom: 3rem;
-    position: relative;
-    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3.5rem;
+    align-items: start;
+    margin-bottom: 4.5rem;
   }
-  .about-hero::before {
-    content: '';
-    position: absolute;
-    top: -80px;
-    right: -80px;
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    opacity: 0.08;
-    pointer-events: none;
-  }
-  .about-avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 3px solid var(--color-border);
-  }
-  .about-hero-content { flex: 1; position: relative; }
   .about-name {
-    font-size: 1.75rem;
-    margin-bottom: 0.25rem;
+    font-size: clamp(2.2rem, 5vw, 3.3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    margin: 0.8rem 0 0.6rem;
   }
   .about-role {
-    color: var(--color-primary);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
     font-weight: 600;
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
-  }
-  .about-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-  .about-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.7rem;
-    background: var(--color-tag-bg);
-    color: var(--color-tag-text);
-    border-radius: 100px;
-    font-size: 0.78rem;
-    font-weight: 600;
-  }
-  .about-location {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
-    margin-bottom: 1.25rem;
-  }
-  .about-links {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-  .btn-sm {
-    padding: 0.35rem 0.85rem;
-    font-size: 0.8rem;
-  }
-  .about-section { margin-bottom: 3rem; }
-  .section-heading {
-    font-size: 1.5rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color-border);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 1.75rem;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   .about-text {
     max-width: none;
-    font-size: 1.05rem;
-    line-height: 1.8;
+    color: var(--color-text-muted);
+    font-size: 1.07rem;
+    line-height: 1.85;
   }
+  .about-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+  .social-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text);
+    transition: all var(--transition);
+  }
+  .social-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    box-shadow: var(--glow);
+  }
+
+  .profile-card {
+    position: sticky;
+    top: 100px;
+    padding: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--color-primary) 16%, transparent), transparent 65%),
+      var(--color-bg-card);
+    text-align: center;
+  }
+  .portrait {
+    position: relative;
+    width: 168px;
+    aspect-ratio: 1;
+    margin: 0.5rem auto 1.75rem;
+  }
+  .portrait img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 4px;
+    background: var(--gradient-brand);
+  }
+  .portrait-ring {
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 1px dashed color-mix(in srgb, var(--color-primary) 45%, transparent);
+    animation: spin 40s linear infinite;
+  }
+  .profile-facts {
+    display: grid;
+    gap: 0;
+    text-align: left;
+    margin-bottom: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .profile-facts div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+  }
+  .profile-facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding-top: 0.15rem;
+  }
+  .profile-facts dd { font-weight: 500; text-align: right; }
+  .profile-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .about-section { margin-bottom: 4rem; }
+  .section-head { margin-bottom: 1.75rem; }
+  .section-head h2 { margin-top: 0.6rem; font-weight: 800; }
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
   }
   .skill-group {
-    background: var(--color-bg-secondary);
+    padding: 1.4rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: 1.25rem;
+    background: color-mix(in srgb, var(--color-bg-card) 80%, transparent);
+    transition: border-color var(--transition);
   }
-  .skill-category {
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-muted);
-    margin-bottom: 0.85rem;
+  .skill-group:hover { border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border)); }
+  .skill-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .skill-category { font-size: 1rem; font-weight: 700; }
+  .skill-index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-primary);
   }
   .skill-list {
     list-style: none;
@@ -212,76 +259,84 @@ const links = [
     flex-direction: column;
     gap: 0.5rem;
   }
-  .skill-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
+  .skill-list li {
+    position: relative;
+    padding-left: 1.1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
   }
-  .skill-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    flex-shrink: 0;
+  .skill-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
   }
-  .cert-group {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
+
+  .certs-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
   }
-  .certs-list { list-style: none; }
   .cert-item {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .cert-item:last-child { border-bottom: none; }
-  .cert-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.2rem 0.55rem;
-    border: 1px solid;
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
-    min-width: 5rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
   }
   .cert-code {
+    --cert: var(--color-primary);
+    flex-shrink: 0;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--cert);
+    border-radius: var(--radius-sm);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    white-space: nowrap;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--cert);
   }
-  .cert-name {
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
+  .cert-name { font-size: 0.9rem; font-weight: 500; }
+
   .contact-card {
-    padding: 2rem;
-    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-card) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 2.5rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
+    background:
+      radial-gradient(ellipse at 100% 100%, color-mix(in srgb, var(--color-teal) 14%, transparent), transparent 55%),
+      radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--color-blue) 14%, transparent), transparent 55%),
+      var(--color-bg-card);
   }
-  .contact-card p { color: var(--color-text-muted); }
+  .contact-title {
+    font-weight: 800;
+    margin: 0.6rem 0 0.5rem;
+  }
+  .contact-text {
+    color: var(--color-text-muted);
+    max-width: 48ch;
+    margin: 0;
+  }
   .contact-actions {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
-    margin-top: 1.25rem;
   }
 
-  @media (max-width: 640px) {
-    .about-hero {
-      flex-direction: column;
-      text-align: center;
-      padding: 2rem 1.5rem;
-    }
-    .about-badges,
-    .about-location,
-    .about-links { justify-content: center; }
+  @media (max-width: 960px) {
+    .about-hero { grid-template-columns: 1fr; gap: 2.5rem; }
+    .profile-card { position: static; order: -1; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
     .skills-grid { grid-template-columns: 1fr; }
+    .contact-card { padding: 1.75rem; }
   }
 </style>
