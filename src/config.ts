@@ -9,6 +9,9 @@ export const SITE = {
   postsPerPage: 10,
 };
 
+// Year you started your career (graduated university).
+const CAREER_START_YEAR = 2008;
+
 export const AUTHOR = {
   name: 'Nonso Udechukwu',
   fullName: 'Nonso Emmanuel Udechukwu',
@@ -17,8 +20,8 @@ export const AUTHOR = {
   avatar: 'https://avatars.githubusercontent.com/u/35489366?v=4',
   location: 'Netherlands',
   origin: 'Nigeria',
-  // Shown in the home page hero stats. Update to your real value.
-  yearsExperience: '5+',
+  // Calculated at build time from CAREER_START_YEAR.
+  yearsExperience: `${new Date().getFullYear() - CAREER_START_YEAR}+`,
   bio: 'Platform & DevOps engineer exploring AI, cloud-native platforms, Kubernetes and automation on Azure.',
   email: 'nonso.udechukwu@gmail.com',
 };
