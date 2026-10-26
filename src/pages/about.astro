@@ -95,7 +95,7 @@ const links = [
                 <h3 class="cert-issuer">{group.issuer} <span class="cert-count">· {group.items.length}</span></h3>
                 {group.verifyUrl && (
                   <a href={group.verifyUrl} target="_blank" rel="noopener noreferrer" class="cert-verify">
-                    Verify <Icon name="arrow-up-right" size={14} />
+                    {group.verifyLabel ?? 'Verify'} <Icon name="arrow-up-right" size={14} />
                   </a>
                 )}
               </div>
