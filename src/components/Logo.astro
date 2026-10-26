@@ -1,0 +1,80 @@
+---
+import { SITE } from '../config';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<a href="/" class:list={['logo', { 'logo--compact': compact }]} aria-label={`${SITE.title} - Home`}>
+  <span class="logo-mark" aria-hidden="true">
+    <img src="/images/logo-mark.png" alt="" width="40" height="40" />
+  </span>
+  <span class="logo-text">
+    <span class="logo-name">Nonso<span class="logo-accent">Tech</span></span>
+    <span class="logo-sub">AI · Platform · DevOps</span>
+  </span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .logo-mark {
+    position: relative;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 45%, transparent),
+      0 0 18px -4px color-mix(in srgb, var(--color-primary) 70%, transparent);
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+  .logo-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.18);
+  }
+  .logo:hover .logo-mark {
+    transform: rotate(-8deg);
+    box-shadow: 0 0 0 1px var(--color-primary), 0 0 26px -2px color-mix(in srgb, var(--color-primary) 80%, transparent);
+  }
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .logo-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+  .logo-accent {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo-sub {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-top: 0.2rem;
+  }
+  .logo--compact .logo-sub { display: none; }
+  @media (max-width: 420px) {
+    .logo-sub { display: none; }
+  }
+</style>
