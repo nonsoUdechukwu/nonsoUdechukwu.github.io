@@ -91,7 +91,14 @@ const links = [
         <div class="cert-groups">
           {certGroups.map((group) => (
             <div class="cert-group">
-              <h3 class="cert-issuer">{group.issuer}</h3>
+              <div class="cert-issuer-row">
+                <h3 class="cert-issuer">{group.issuer} <span class="cert-count">· {group.items.length}</span></h3>
+                {group.verifyUrl && (
+                  <a href={group.verifyUrl} target="_blank" rel="noopener noreferrer" class="cert-verify">
+                    Verify <Icon name="arrow-up-right" size={14} />
+                  </a>
+                )}
+              </div>
               {group.highlight && (
                 <div class="cert-highlight">
                   <span class="cert-highlight-icon" aria-hidden="true"><Icon name="kubernetes" size={26} /></span>
@@ -323,8 +330,27 @@ const links = [
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-text-muted);
+    margin: 0;
+  }
+  .cert-issuer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem;
   }
+  .cert-count { color: var(--color-primary); }
+  .cert-verify {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .cert-verify:hover { color: var(--color-primary); }
   .cert-highlight {
     display: flex;
     align-items: center;

@@ -22,6 +22,8 @@ export const SKILLS: { category: string; items: string[] }[] = [
 export type Certification = { code: string; name: string };
 export type CertificationGroup = {
   issuer: string;
+  /** Optional public link where the credentials can be verified. */
+  verifyUrl?: string;
   /** Optional standout title shown above the group, e.g. Kubestronaut. */
   highlight?: { title: string; desc: string };
   items: Certification[];
@@ -48,6 +50,18 @@ export const CERTIFICATIONS: CertificationGroup[] = [
   },
   {
     issuer: 'Microsoft',
-    items: [],
+    verifyUrl: 'https://learn.microsoft.com/en-us/users/nonsoudechukwu-6700/transcript/d8y64f8o085gz3z?tab=credentials-tab',
+    items: [
+      { code: 'AZ-305', name: 'Azure Solutions Architect Expert' },
+      { code: 'AZ-400', name: 'DevOps Engineer Expert' },
+      { code: 'AZ-104', name: 'Azure Administrator Associate' },
+      { code: 'AZ-204', name: 'Azure Developer Associate' },
+      { code: 'AZ-500', name: 'Azure Security Engineer Associate' },
+      { code: 'SC-300', name: 'Identity and Access Administrator Associate' },
+      { code: 'SC-200', name: 'Security Operations Analyst Associate' },
+      { code: 'MCSA', name: 'Microsoft Certified Solutions Associate: Cloud Platform' },
+      { code: '70-533', name: 'Specialist: Implementing Microsoft Azure Infrastructure Solutions' },
+      { code: 'MCP', name: 'Microsoft Certified Professional' },
+    ],
   },
 ];
