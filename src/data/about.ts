@@ -19,9 +19,35 @@ export const SKILLS: { category: string; items: string[] }[] = [
   { category: 'Platform & Home Lab', items: ['Platform Engineering', 'Linux', 'Proxmox / self-hosting'] },
 ];
 
+export type Certification = { code: string; name: string };
+export type CertificationGroup = {
+  issuer: string;
+  /** Optional standout title shown above the group, e.g. Kubestronaut. */
+  highlight?: { title: string; desc: string };
+  items: Certification[];
+};
+
 /**
- * Add your certifications here, e.g.
- * { code: 'AZ-104', name: 'Azure Administrator Associate', color: '#0078d4' }
- * The section is hidden while the list is empty.
+ * Groups with no items are hidden. Add Microsoft certifications like:
+ * { code: 'AZ-400', name: 'DevOps Engineer Expert' }
  */
-export const CERTIFICATIONS: { code: string; name: string; color?: string }[] = [];
+export const CERTIFICATIONS: CertificationGroup[] = [
+  {
+    issuer: 'CNCF / Linux Foundation',
+    highlight: {
+      title: 'Kubestronaut',
+      desc: 'Awarded by the CNCF for holding all five Kubernetes certifications.',
+    },
+    items: [
+      { code: 'CKA', name: 'Certified Kubernetes Administrator' },
+      { code: 'CKAD', name: 'Certified Kubernetes Application Developer' },
+      { code: 'CKS', name: 'Certified Kubernetes Security Specialist' },
+      { code: 'KCSA', name: 'Kubernetes and Cloud Native Security Associate' },
+      { code: 'KCNA', name: 'Kubernetes and Cloud Native Associate' },
+    ],
+  },
+  {
+    issuer: 'Microsoft',
+    items: [],
+  },
+];

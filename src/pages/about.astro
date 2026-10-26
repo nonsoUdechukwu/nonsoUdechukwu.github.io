@@ -4,6 +4,8 @@ import Icon from '../components/Icon.astro';
 import { AUTHOR, SOCIALS } from '../config';
 import { ABOUT, CERTIFICATIONS, SKILLS } from '../data/about';
 
+const certGroups = CERTIFICATIONS.filter((g) => g.items.length > 0);
+
 const links = [
   { href: SOCIALS.github, label: 'GitHub', icon: 'github' },
   { href: SOCIALS.linkedin, label: 'LinkedIn', icon: 'linkedin' },
@@ -80,20 +82,36 @@ const links = [
       </div>
     </section>
 
-    {CERTIFICATIONS.length > 0 && (
+    {certGroups.length > 0 && (
       <section class="about-section">
         <header class="section-head">
           <p class="eyebrow">Credentials</p>
           <h2>Certifications</h2>
         </header>
-        <ul class="certs-list">
-          {CERTIFICATIONS.map((c) => (
-            <li class="cert-item">
-              <span class="cert-code" style={c.color ? `--cert:${c.color}` : undefined}>{c.code}</span>
-              <span class="cert-name">{c.name}</span>
-            </li>
+        <div class="cert-groups">
+          {certGroups.map((group) => (
+            <div class="cert-group">
+              <h3 class="cert-issuer">{group.issuer}</h3>
+              {group.highlight && (
+                <div class="cert-highlight">
+                  <span class="cert-highlight-icon" aria-hidden="true"><Icon name="kubernetes" size={26} /></span>
+                  <div>
+                    <p class="cert-highlight-title gradient-text">{group.highlight.title}</p>
+                    <p class="cert-highlight-desc">{group.highlight.desc}</p>
+                  </div>
+                </div>
+              )}
+              <ul class="certs-list">
+                {group.items.map((c) => (
+                  <li class="cert-item">
+                    <span class="cert-code">{c.code}</span>
+                    <span class="cert-name">{c.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
     )}
 
@@ -297,10 +315,56 @@ const links = [
     font-family: var(--font-mono);
   }
 
+  .cert-groups { display: grid; gap: 2.5rem; }
+  .cert-issuer {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+  .cert-highlight {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(var(--color-bg-card), var(--color-bg-card)) padding-box,
+      var(--gradient-brand) border-box;
+    box-shadow: var(--glow);
+  }
+  .cert-highlight-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--gradient-button);
+    color: var(--color-on-primary);
+  }
+  .cert-highlight-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .cert-highlight-desc {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0.15rem 0 0;
+  }
   .certs-list {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 0.75rem;
   }
   .cert-item {
@@ -315,6 +379,8 @@ const links = [
   .cert-code {
     --cert: var(--color-primary);
     flex-shrink: 0;
+    min-width: 3.6rem;
+    text-align: center;
     padding: 0.25rem 0.6rem;
     border: 1px solid var(--cert);
     border-radius: var(--radius-sm);
