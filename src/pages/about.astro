@@ -38,7 +38,20 @@ const links = [
         </div>
         <dl class="profile-facts">
           <div><dt>Role</dt><dd>{AUTHOR.title}</dd></div>
-          <div><dt>Based in</dt><dd>{AUTHOR.location}</dd></div>
+          <div>
+            <dt>Based in</dt>
+            <dd class="place">
+              <svg class="flag" viewBox="0 0 9 6" aria-hidden="true"><rect width="9" height="2" fill="#AE1C28" /><rect y="2" width="9" height="2" fill="#fff" /><rect y="4" width="9" height="2" fill="#21468B" /></svg>
+              {AUTHOR.location}
+            </dd>
+          </div>
+          <div>
+            <dt>From</dt>
+            <dd class="place">
+              <svg class="flag" viewBox="0 0 6 3" aria-hidden="true"><rect width="2" height="3" fill="#008751" /><rect x="2" width="2" height="3" fill="#fff" /><rect x="4" width="2" height="3" fill="#008751" /></svg>
+              {AUTHOR.origin}
+            </dd>
+          </div>
           <div><dt>Experience</dt><dd>{AUTHOR.yearsExperience} years</dd></div>
         </dl>
         <div class="profile-badges">
@@ -217,6 +230,17 @@ const links = [
     padding-top: 0.15rem;
   }
   .profile-facts dd { font-weight: 500; text-align: right; }
+  .place {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .flag {
+    width: 22px;
+    height: 15px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px var(--color-border-strong);
+  }
   .profile-badges {
     display: flex;
     flex-wrap: wrap;
