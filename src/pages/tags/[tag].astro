@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { TOPICS } from '../../config';
+import { getPosts, getTags, slugify, type Post } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const tags = getTags(posts);
+  const paths = tags.map((tag) => ({
+    params: { tag: tag.slug },
+    props: { name: tag.name, posts: posts.filter((p) => p.data.tags.some((t) => slugify(t) === tag.slug)) },
+  }));
+  // Ensure every home-page topic link resolves, even before a post uses that tag.
+  for (const topic of TOPICS) {
+    if (!tags.some((t) => t.slug === topic.tag)) {
+      paths.push({ params: { tag: topic.tag }, props: { name: topic.name, posts: [] } });
+    }
+  }
+  return paths;
+}
+
+interface Props {
+  name: string;
+  posts: Post[];
+}
+const { name, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${name}`} description={`Articles tagged with ${name}.`}>
+  <div class="container tag-page">
+    <header class="page-header">
+      <a href="/tags" class="back-link">← All tags</a>
+      <h1 class="page-title"><span class="hash">#</span>{name}</h1>
+      <p class="page-description">
+        {posts.length} {posts.length === 1 ? 'article' : 'articles'} tagged with <strong>{name}</strong>.
+      </p>
+    </header>
+    {posts.length > 0 ? (
+      <div class="posts-grid">
+        {posts.map((post) => <BlogCard post={post} />)}
+      </div>
+    ) : (
+      <div class="empty">
+        <p>No articles on this topic yet — they're on the way.</p>
+        <a href="/blog" class="btn btn-secondary">Browse all posts</a>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page { padding: 3rem 1.5rem 0; }
+  .page-header { margin-bottom: 3rem; }
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .page-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 0.75rem;
+  }
+  .hash { color: var(--color-primary); }
+  .page-description {
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .empty {
+    padding: 3rem;
+    text-align: center;
+    background: var(--color-bg-secondary);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-muted);
+  }
+  @media (max-width: 1024px) {
+    .posts-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .posts-grid { grid-template-columns: 1fr; }
+  }
+</style>

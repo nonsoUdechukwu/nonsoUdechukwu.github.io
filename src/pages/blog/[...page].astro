@@ -1,0 +1,274 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { AUTHOR, SITE } from '../../config';
+import { getPosts, getTags, type Post } from '../../utils/posts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+  return paginate(posts, { pageSize: SITE.postsPerPage, props: { tags: getTags(posts) } });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+  tags: ReturnType<typeof getTags>;
+}
+const { page, tags } = Astro.props;
+const pageHref = (n: number) => (n === 1 ? '/blog' : `/blog/${n}`);
+---
+
+<BaseLayout title={page.currentPage > 1 ? `Blog — Page ${page.currentPage}` : 'Blog'} description="Practical guides and insights on Azure, DevOps, Kubernetes and modern cloud engineering.">
+  <div class="blog-page">
+    <div class="container">
+      <header class="page-header">
+        <h1 class="page-title">Blog</h1>
+        <p class="page-description">
+          Practical guides and insights on Azure, DevOps, Kubernetes, and modern cloud engineering.
+        </p>
+        <div class="post-count">
+          <span>{page.total} {page.total === 1 ? 'article' : 'articles'}</span>
+        </div>
+      </header>
+
+      <div class="blog-layout">
+        <div class="posts-area">
+          {page.data.length > 0 ? (
+            <div class="posts-grid">
+              {page.data.map((post) => <BlogCard post={post} />)}
+            </div>
+          ) : (
+            <p class="empty">No posts yet — check back soon.</p>
+          )}
+
+          {page.lastPage > 1 && (
+            <nav class="pagination" aria-label="Pagination">
+              <span class="pagination-info">Page {page.currentPage} of {page.lastPage}</span>
+              <div class="pagination-links">
+                <a href={page.url.prev ?? '#'} class:list={['pagination-btn', { disabled: !page.url.prev }]} aria-disabled={!page.url.prev}>
+                  ← Prev
+                </a>
+                {Array.from({ length: page.lastPage }, (_, i) => i + 1).map((n) => (
+                  <a href={pageHref(n)} class:list={['pagination-page', { active: n === page.currentPage }]} aria-current={n === page.currentPage ? 'page' : undefined}>
+                    {n}
+                  </a>
+                ))}
+                <a href={page.url.next ?? '#'} class:list={['pagination-btn', { disabled: !page.url.next }]} aria-disabled={!page.url.next}>
+                  Next →
+                </a>
+              </div>
+            </nav>
+          )}
+        </div>
+
+        <aside class="sidebar">
+          <div class="sidebar-card">
+            <h2 class="sidebar-heading">About the Author</h2>
+            <div class="author-bio">
+              <img src={AUTHOR.avatar} alt={AUTHOR.name} class="author-avatar-lg" width="48" height="48" loading="lazy" />
+              <div>
+                <p class="author-name">{AUTHOR.name}</p>
+                <p class="author-text">{AUTHOR.bio}</p>
+                <a href="/about" class="sidebar-link">More about me →</a>
+              </div>
+            </div>
+          </div>
+          {tags.length > 0 && (
+            <div class="sidebar-card">
+              <h2 class="sidebar-heading">Popular Tags</h2>
+              <div class="tag-cloud">
+                {tags.slice(0, 12).map((tag) => (
+                  <a href={`/tags/${tag.slug}`} class="tag-item">
+                    <span>#{tag.name}</span>
+                    <span class="tag-count">{tag.count}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-page { padding: 3rem 0 0; }
+  .page-header { margin-bottom: 3rem; }
+  .page-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 0.75rem;
+  }
+  .page-description {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 60ch;
+    margin-bottom: 1rem;
+  }
+  .post-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+    align-items: start;
+  }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  .empty { color: var(--color-text-muted); }
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 80px;
+  }
+  .sidebar-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .sidebar-heading {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+  }
+  .tag-cloud {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .tag-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all var(--transition);
+  }
+  .tag-item:hover {
+    background: var(--color-bg-card);
+    color: var(--color-primary);
+  }
+  .tag-count {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    min-width: 24px;
+    text-align: center;
+  }
+  .author-bio {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .author-avatar-lg {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-border);
+    flex-shrink: 0;
+  }
+  .author-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .author-text {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+  .sidebar-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .pagination-info {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+  .pagination-links {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+  .pagination-btn,
+  .pagination-page {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .pagination-btn:hover,
+  .pagination-page:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .pagination-page.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+  }
+  .pagination-btn.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  @media (max-width: 1024px) {
+    .blog-layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: static;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .posts-grid,
+    .sidebar { grid-template-columns: 1fr; }
+  }
+</style>
