@@ -24,6 +24,8 @@ export type CertificationGroup = {
   issuer: string;
   /** Optional public link where the credentials can be verified. */
   verifyUrl?: string;
+  /** Link text for verifyUrl. Defaults to "Verify". */
+  verifyLabel?: string;
   /** Optional standout title shown above the group, e.g. Kubestronaut. */
   highlight?: { title: string; desc: string };
   items: Certification[];
@@ -36,6 +38,8 @@ export type CertificationGroup = {
 export const CERTIFICATIONS: CertificationGroup[] = [
   {
     issuer: 'CNCF / Linux Foundation',
+    verifyUrl: 'https://www.credly.com/users/nonso-udechukwu',
+    verifyLabel: 'Credly',
     highlight: {
       title: 'Kubestronaut',
       desc: 'Awarded by the CNCF for holding all five Kubernetes certifications.',
@@ -50,6 +54,7 @@ export const CERTIFICATIONS: CertificationGroup[] = [
   },
   {
     issuer: 'Microsoft',
+    verifyLabel: 'Transcript',
     verifyUrl: 'https://learn.microsoft.com/en-us/users/nonsoudechukwu-6700/transcript/d8y64f8o085gz3z?tab=credentials-tab',
     items: [
       { code: 'AZ-305', name: 'Azure Solutions Architect Expert' },
