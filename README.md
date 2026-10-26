@@ -1,43 +1,57 @@
-# Chirpy Starter
+# NonsoTech Insights
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+Personal blog of **Nonso Udechukwu** — Azure, DevOps, Platform Engineering, Kubernetes, IaC and home labs.
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+Live: <https://nonsoudechukwu.github.io>
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
+## Stack
 
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
+- [Astro](https://astro.build) (static output, view transitions, MDX)
+- [Pagefind](https://pagefind.app) full-text search (⌘K / Ctrl+K)
+- RSS (`/rss.xml`) and sitemap
+- Dark/light theme, dual-theme Shiki code highlighting
+- Deployed to GitHub Pages via GitHub Actions
 
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
+## Development
+
+Requires Node.js `>=22.23.4`.
+
+```bash
+npm install
+npm run dev       # http://localhost:4321
+npm run build     # astro build + pagefind index -> dist/
+npm run preview   # serve the built site (search works here)
+npm run check     # type check
 ```
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+> Search is powered by Pagefind and only works on a built site (`npm run build && npm run preview`).
 
-## Usage
+## Writing posts
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+Add a Markdown or MDX file to `src/content/blog/`. The file name becomes the URL (`/blog/<file-name>`).
 
-## Contributing
+```yaml
+---
+title: "My post title"
+description: "One-line summary used on cards and for SEO."
+pubDate: 2025-01-31
+updatedDate: 2025-02-02   # optional
+heroImage: /images/my-post.png  # optional, place file in public/images/
+tags: [Azure, Kubernetes]
+draft: false              # drafts are hidden in production builds
+---
+```
 
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
+## Customising
 
-## License
+| What | Where |
+| --- | --- |
+| Site title, author, socials, nav, home-page topics | `src/config.ts` |
+| About page text, skills, certifications | `src/data/about.ts` |
+| Colours, fonts, design tokens | `src/styles/global.css` |
+| Layout / meta tags | `src/layouts/BaseLayout.astro` |
 
-This work is published under [MIT][mit] License.
+## Deployment
 
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+`.github/workflows/pages-deploy.yml` builds and deploys on every push to `main`.
+In the repository go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
