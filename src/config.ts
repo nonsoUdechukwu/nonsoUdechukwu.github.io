@@ -37,6 +37,7 @@ export const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
   { href: '/tags', label: 'Tags' },
+  { href: '/aks-updates', label: 'AKS Updates' },
   { href: '/about', label: 'About' },
 ];
 
