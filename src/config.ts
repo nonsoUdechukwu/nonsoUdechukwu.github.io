@@ -19,7 +19,6 @@ export const AUTHOR = {
   title: 'DevOps & Platform Engineer',
   avatar: '/images/profile.jpg',
   location: 'Netherlands',
-  origin: 'Nigeria',
   // Calculated at build time from CAREER_START_YEAR.
   yearsExperience: `${new Date().getFullYear() - CAREER_START_YEAR}+`,
   bio: 'DevOps & Platform Engineer building secure, scalable cloud platforms and AI-powered automation across Azure, AWS and Google Cloud.',
