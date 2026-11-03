@@ -22,7 +22,7 @@ const ogImage = new URL(image, Astro.site);
 ---
 
 <!doctype html>
-<html lang={SITE.lang} data-theme="dark">
+<html lang={SITE.lang} data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,7 +33,7 @@ const ogImage = new URL(image, Astro.site);
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#060a12" />
+    <meta name="theme-color" content="#f5f8fc" />
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
@@ -61,7 +61,7 @@ const ogImage = new URL(image, Astro.site);
       (function () {
         function apply() {
           var stored = localStorage.getItem('theme');
-          var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          var theme = stored === 'dark' ? 'dark' : 'light';
           document.documentElement.dataset.theme = theme;
         }
         apply();
