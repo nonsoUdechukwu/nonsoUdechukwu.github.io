@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://nonsoudechukwu.github.io',
+  site: 'https://nonsotech.dev',
   trailingSlash: 'ignore',
   integrations: [mdx(), sitemap()],
   redirects: {

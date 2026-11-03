@@ -4,7 +4,7 @@ export const SITE = {
   tagline: 'AI · Platform Engineering · DevOps',
   description:
     "Practical guides and real-world insights on AI, Platform Engineering, DevOps, Azure, Kubernetes and Infrastructure as Code by Nonso Emmanuel Udechukwu.",
-  url: 'https://nonsoudechukwu.github.io',
+  url: 'https://nonsotech.dev',
   lang: 'en',
   postsPerPage: 10,
 };

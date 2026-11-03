@@ -2,7 +2,7 @@
 
 Personal blog of **Nonso Udechukwu** — Azure, DevOps, Platform Engineering, Kubernetes, IaC and home labs.
 
-Live: <https://nonsoudechukwu.github.io>
+Live: <https://nonsotech.dev>
 
 ## Stack
 
